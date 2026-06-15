@@ -20,7 +20,7 @@ async function sendMessage() {
     const message = document.getElementById("message").value;
     const response = await fetch("/chat", {
         method: "POST", 
-        headers: {"Content-Type": application/JSON},
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({message: message})
     });
 

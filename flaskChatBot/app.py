@@ -1,15 +1,13 @@
 from flask import Flask, jsonify, request, render_template
-from langchain.messages import SystemMessage, HumanMessage, AIMessage
+from langchain.messages import SystemMessage, HumanMessage
 from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
 import os
 
 
 load_dotenv()
-
-os.environ["GEMINI_API_KEY"] = os.getenv("GEMINI_API_KEY")
-
-model = init_chat_model("gemini-3.5-flash")
+api_key = os.getenv("GEMINI_API_KEY")
+model = init_chat_model("google_genai:gemini-2.5-flash-lite", api_key=api_key)
 
 
 app = Flask(__name__)
