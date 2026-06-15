@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arnavGPT</title>
+</head>
+<body>
+    <h1>Welcome User</h1>
+    <input type="text" id="message" placeholder="Type a question"/>
+
+    <button onclick="sendMessage()">Send</button>
+
+    <p>AI: <span id="reply"></span></p>
+</body>
+
+<script>
+
+async function sendMessage() {
+    const message = document.getElementById("message").value;
+    const response = await fetch("/chat", {
+        method: "POST", 
+        headers: {"Content-Type": application/JSON},
+        body: JSON.stringify({message: message})
+    });
+
+    const data = await response.json();
+
+    document.getElementById("reply").innerText = data.Reply;
+
+}
+
+</script>
+</html>
