@@ -10,11 +10,21 @@
     <input type="text" id="message" placeholder="Type a question"/>
 
     <button onclick="sendMessage()">Send</button>
+    <button onclick="clearChat()">Clear</button>
 
-    <p>AI: <span id="reply"></span></p>
+
+    <p><span id="reply"></span></p>
 </body>
 
 <script>
+
+const messageChain = {
+        "humanMessages" : [],
+        "AIMessages" : []
+}
+const output = document.getElementById("reply");
+output.innerText = "";
+
 
 async function sendMessage() {
     const message = document.getElementById("message").value;
@@ -25,9 +35,28 @@ async function sendMessage() {
     });
 
     const data = await response.json();
+    messageChain["humanMessages"].push(message);
+    messageChain["AIMessages"].push(data.Reply);
 
-    document.getElementById("reply").innerText = data.Reply;
+    for(let x = 0; x < messageChain["humanMessages"].length; x++){
+        const humanText = "Human: " + messageChain["humanMessages"][x];
+        const AItext = "AI: " + messageChain["AIMessages"][x];
 
+        const paragraph = document.createElement("p");
+        paragraph.innerText = humanText + "\n" + AItext;
+        output.appendChild(paragraph);
+    }
+    // document.getElementById("reply").innerText = data.Reply;
+    document.getElementById("message").value = "";
+}
+
+async function clearChat() {
+    await fetch("/clear", {
+        method: "POST", 
+    })
+    document.getElementById("reply").innerText = "";
+    messageChain["humanMessages"] = [];
+    messageChain["AIMessages"] = [];
 }
 
 </script>
