@@ -1,63 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>arnavGPT</title>
 </head>
+
 <body>
     <h1>Welcome User</h1>
-    <input type="text" id="message" placeholder="Type a question"/>
 
-    <button onclick="sendMessage()">Send</button>
-    <button onclick="clearChat()">Clear</button>
-
+    <div style="display: flex; justify-content: flex-end;">
+        <button onclick="clearChat()">❌</button>
+    </div>
 
     <p><span id="reply"></span></p>
+
+    <input type="text" id="message" placeholder="Type a question"/>
+    <button onclick="sendMessage()">➤</button>
+
+
+
 </body>
 
 <script>
 
-const messageChain = {
-        "humanMessages" : [],
-        "AIMessages" : []
-}
-const output = document.getElementById("reply");
-output.innerText = "";
-
-
-async function sendMessage() {
-    const message = document.getElementById("message").value;
-    const response = await fetch("/chat", {
-        method: "POST", 
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({message: message})
-    });
-
-    const data = await response.json();
-    messageChain["humanMessages"].push(message);
-    messageChain["AIMessages"].push(data.Reply);
-
-    for(let x = 0; x < messageChain["humanMessages"].length; x++){
-        const humanText = "Human: " + messageChain["humanMessages"][x];
-        const AItext = "AI: " + messageChain["AIMessages"][x];
-
-        const paragraph = document.createElement("p");
-        paragraph.innerText = humanText + "\n" + AItext;
-        output.appendChild(paragraph);
+    const messageChain = {
+        "humanMessages": [],
+        "AIMessages": []
     }
-    // document.getElementById("reply").innerText = data.Reply;
-    document.getElementById("message").value = "";
-}
+    const output = document.getElementById("reply");
+    output.innerText = "";
 
-async function clearChat() {
-    await fetch("/clear", {
-        method: "POST", 
-    })
-    document.getElementById("reply").innerText = "";
-    messageChain["humanMessages"] = [];
-    messageChain["AIMessages"] = [];
-}
+
+    async function sendMessage() {
+        const message = document.getElementById("message").value;
+
+        const humanpara = document.createElement("p");
+        humanpara.innerText = "Human: " + message + "\n";
+        output.appendChild(humanpara);
+
+        const aipara = document.createElement("p");
+        aipara.innerText = "Thinking...";
+        output.appendChild(aipara);
+
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+        messageChain["humanMessages"].push(message);
+        messageChain["AIMessages"].push(data.Reply);
+
+        for (let x = 0; x < messageChain["humanMessages"].length; x++) {
+            const humanText = "Human: " + messageChain["humanMessages"][x];
+            const AItext = "AI: " + messageChain["AIMessages"][x];
+        }
+
+
+        aipara.innerText = "AI: " + data.Reply;
+
+        document.getElementById("message").value = "";
+    }
+
+    async function clearChat() {
+        await fetch("/clear", {
+            method: "POST",
+        })
+        document.getElementById("reply").innerText = "";
+        messageChain["humanMessages"] = [];
+        messageChain["AIMessages"] = [];
+    }
 
 </script>
+
 </html>
