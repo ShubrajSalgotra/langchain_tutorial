@@ -4,3 +4,6 @@ langchain-openai
 python-dotenv
 flask
 langchain-google-genai
+langchain-text-splitters
+pypdf
+langchain-chroma
